@@ -1,9 +1,14 @@
 package com.leadDashboard.model;
 
+
+
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -12,15 +17,16 @@ import lombok.experimental.Accessors;
 @ToString
 @Accessors(chain = true)
 @Entity
-public class LeadModel {
+@Table(name = "leads")
+public class Lead {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int lid;
 	private String isItLead;
-	private String Date;
+	private Date Date;
 	private String entryMadeBy;
 	private String nameOfBDManager;
-	private String leadGenerationDate;
+	private Date leadGenerationDate;
 	private String clientName;
 	private String status;
 	private String overAllStatus;

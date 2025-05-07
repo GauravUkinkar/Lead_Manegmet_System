@@ -49,6 +49,13 @@ public interface Constants {
 	String STATUS_DELETED = "Status Deleted";
 	String STATUS_FOUND = "Status Found";
 	
+	
+	String LEAD_ADDED = "Lead Added";
+	String INVALID_LEAD_DATA = "Invalid Lead Data";
+	String LEAD_UPDATED = "Lead Updated";
+	String LEAD_NOT_FOUND = "Lead not found";
+	String LEAD_FOUND = "Lead found";
+	
 
 	
 	
