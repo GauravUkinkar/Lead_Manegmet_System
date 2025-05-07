@@ -64,7 +64,7 @@ public class SecurityConfigration {
 	            ).permitAll()
 	            .requestMatchers("/superadmin/**").permitAll()
 	            .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-	            .requestMatchers("/seller/**").hasAnyAuthority("SELLER")
+	            .requestMatchers("/User/**").hasAnyAuthority("USER")
 	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
