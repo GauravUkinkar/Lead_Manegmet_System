@@ -41,6 +41,14 @@ public interface Constants {
 	String PASSWORD_MISMATCH = "Password and Confirm Password are not same";
 	String USER_UPDATED = "User updated successfully";
 	
+	
+	String STATUS_ADDED = "Status Added";
+	String INVALID_STATUS_DATA = "Invalid Status Data";
+	String STATUS_NOT_FOUND = "Status not Found";
+	String STATUS_UPDATED = "Status Updated";
+	String STATUS_DELETED = "Status Deleted";
+	String STATUS_FOUND = "Status Found";
+	
 
 	
 	

@@ -46,7 +46,7 @@ public class SecurityConfigration {
 	                "/swagger-resources/**",
 	                "/webjars/**"
 	            ).permitAll()
-	            .requestMatchers("/superadmin/**").permitAll()
+	            .requestMatchers("/superadmin/**","/status/**").permitAll()
 	            .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
 	            .requestMatchers("/User/**").hasAnyAuthority("USER")
 	            .anyRequest().authenticated()
