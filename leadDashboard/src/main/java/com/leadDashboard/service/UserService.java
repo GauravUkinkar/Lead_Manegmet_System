@@ -19,5 +19,6 @@ public interface UserService {
 //	public Message<UserDto>updateUser(UserDto request);
 	public Message<UserDto>deleteUser(Integer id);
 	public Message<UserDto>getUserById(Integer id);
+	public Message<UserDto>changePassword(ChangePasswordDto request);
 	
 }

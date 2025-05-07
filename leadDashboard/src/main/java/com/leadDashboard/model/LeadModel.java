@@ -36,7 +36,6 @@ public class LeadModel {
 	private String initialPraposalDate;
 	private String futurePraposalDate;
 	private String deletedTag;
-	private String abc;
 	
 	
 

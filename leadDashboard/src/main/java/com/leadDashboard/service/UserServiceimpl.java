@@ -305,4 +305,41 @@ private String password;
 		}
 	}
 
+	@Override
+	public Message<UserDto> changePassword(ChangePasswordDto request) {
+		 Message<UserDto> message = new Message<>();
+		    String encryptedPassword = passwordEncoder.encode(request.getConfirmPassword());
+
+		    try {
+		        // Fetch the user by email
+		        User user = userRepository.getByEmail(request.getEmail());
+
+		        // Check if the user exists and is not deleted
+		        if (user == null || "True".equalsIgnoreCase(user.getDeltedTag())) {
+		            message.setStatus(HttpStatus.NOT_FOUND);
+		            message.setResponseMessage(Constants.RECORD_NOT_FOUND);
+		            return message;
+		        }
+		        // Check if new password and confirm password match
+		        if (request.getNewPassword().equals(request.getConfirmPassword())) {
+		            user.setPassword(encryptedPassword);
+		            userRepository.save(user);
+
+		            message.setStatus(HttpStatus.OK);
+		            message.setResponseMessage(Constants.PASSWORD_CHANGED_SUCCESSFULLY);
+		        } else {
+		            message.setStatus(HttpStatus.BAD_REQUEST);
+		            message.setResponseMessage(Constants.PASSWORD_MISMATCH);
+		        }
+
+		        return message;
+
+		    } catch (Exception e) {
+		        message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		        message.setResponseMessage(e.getMessage());
+		        log.error(Constants.SOMETHING_WENT_WRONG + "  " + message.getResponseMessage());
+		        return message;
+		    }
+	}
+
 }
