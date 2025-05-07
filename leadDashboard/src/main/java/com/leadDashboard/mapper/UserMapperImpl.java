@@ -16,6 +16,7 @@ public class UserMapperImpl implements UserMapper {
 	public UserDto toUserDto(User user) {
 		return new UserDto().setDeltedTag(user.getDeltedTag())
 				.setEmail(user.getEmail())
+				.setName(user.getName())
 				.setId(user.getId())
 				.setPassword(user.getPassword())
 				.setRole(user.getRole());
@@ -26,6 +27,7 @@ public class UserMapperImpl implements UserMapper {
 		 String encryptedPassword = passwordEncoder.encode(userDto.getPassword());		
 		 return new User().setDeltedTag("False")
 				 .setEmail(userDto.getEmail())
+				 .setName(userDto.getName())
 				 .setPassword(encryptedPassword)
 				 .setRole(userDto.getRole());
 	}
@@ -35,6 +37,7 @@ public class UserMapperImpl implements UserMapper {
 	public UserDto toUserDto(RegistrationDto request) {
 		return new UserDto().setEmail(request.getEmail())
 				.setPassword(request.getPassword())
+				.setName(request.getName())
 				.setRole(request.getRole());
 	}
 

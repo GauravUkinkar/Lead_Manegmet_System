@@ -24,6 +24,7 @@ public class User implements UserDetails {
 	private int id;
 	private String email;
 	private String password;
+	private String name;
 	private String role;
 	private String otp;
 	public String deltedTag;
