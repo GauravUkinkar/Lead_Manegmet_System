@@ -56,6 +56,10 @@ public interface Constants {
 	String LEAD_NOT_FOUND = "Lead not found";
 	String LEAD_FOUND = "Lead found";
 	String LEAD_DELETED = "Lead deleted Successfully";
+	String CONTACT_CHAIN_ADDED = "contact chain addedd successfully";
+	String CONTACT_CHAIN_UPDATED = "contact chain updated successfully";
+	String CONTACT_CHAIN_NOT_FOUND = "Contact chain Not Found";
+	String CONTACT_CHAIN_FOUND = "Contact Chain Found successfully";
 	
 
 	
