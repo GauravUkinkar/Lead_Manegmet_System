@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leadDashboard.Dto.ChangePasswordDto;
 import com.leadDashboard.Dto.ContactchainDto;
 import com.leadDashboard.Dto.Message;
+import com.leadDashboard.Dto.UserDto;
 import com.leadDashboard.service.Contactchainservice;
+import com.leadDashboard.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +27,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class ContactChainController {
 	private final Contactchainservice Service;
+	private final UserService service;
 	
 	@PostMapping("/addcontactchain")
 	public ResponseEntity<Message<ContactchainDto>> addcontactchain(@RequestBody ContactchainDto request){
@@ -58,5 +62,11 @@ public class ContactChainController {
 		List<Message<ContactchainDto>> message=Service.getcontactchainByLid(lid);
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}
-
+	@PostMapping("/ChangePassword")
+	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {
+	 log.info("In UserController changePassword() with request: {}", request);
+		Message<UserDto> message = service.changePassword(request);
+		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
+		return ResponseEntity.status(httpStatus).body(message);
+	}
 }

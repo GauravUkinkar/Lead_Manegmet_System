@@ -58,13 +58,7 @@ public class UserController {
 		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
 		return ResponseEntity.status(httpStatus).body(message);
 	}
-	@PostMapping("/ChangePassword")
-	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {
-	 log.info("In UserController changePassword() with request: {}", request);
-		Message<UserDto> message = service.changePassword(request);
-		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
-		return ResponseEntity.status(httpStatus).body(message);
-	}
+
 	@GetMapping("/GetAllUsers")
 	public ResponseEntity<List<Message<UserDto>>> getAllUsers(@RequestParam("Page")int page,@RequestParam("Size")int size) {
 		log.info("In UserController getAllUsers()");

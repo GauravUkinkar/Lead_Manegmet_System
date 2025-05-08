@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leadDashboard.Dto.ChangePasswordDto;
 import com.leadDashboard.Dto.LeadDto;
 import com.leadDashboard.Dto.Message;
+import com.leadDashboard.Dto.UserDto;
 import com.leadDashboard.service.LeadService;
+import com.leadDashboard.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
 
 public class LeadController {
 	private final LeadService leadservice;
+	private final UserService service;
 	
 	@PostMapping("/addLead")
 	public ResponseEntity<Message<LeadDto>>AddClient(@RequestBody LeadDto request){
@@ -55,13 +59,13 @@ public class LeadController {
 		List<Message<LeadDto>> message=leadservice.GetAllLead();
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}
-	@DeleteMapping("/deleteLead")
-	public ResponseEntity<Message<LeadDto>>DeleteClient(@RequestParam("lid") int lid){
-		log.info("In usercontroller login() with requesty:{}",lid);
-		Message<LeadDto> message=leadservice.deleteLead(lid);
-		HttpStatus httpStatus=HttpStatus.valueOf(message.getStatus().value());
+	@PostMapping("/ChangePassword")
+	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {
+	 log.info("In UserController changePassword() with request: {}", request);
+		Message<UserDto> message = service.changePassword(request);
+		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
 		return ResponseEntity.status(httpStatus).body(message);
 	}
-
+	
 
 }
