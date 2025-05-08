@@ -48,11 +48,19 @@ public class SecurityConfigration {
 	            ).permitAll()
 
 	            
+//	            .requestMatchers("/User/**").permitAll()
+//	            .requestMatchers("/admin/**","/status/**","/contactchaincontroller/**","/lead/**").hasAnyAuthority("ADMIN")
+//	            .requestMatchers("/lead/**","/status/**","/contactchaincontroller/**").hasAnyAuthority("SALESMANAGER")
+//	            .requestMatchers("/lead/**").hasAnyAuthority("LEADSMANEGER")
+////	            .requestMatchers("/User/**").hasAnyAuthority("USER")
+//	            .anyRequest().authenticated()
+//	        )
 	            .requestMatchers("/User/**").permitAll()
-	            .requestMatchers("/admin/**","/status/**","/contactchaincontroller/**","/lead/**").hasAnyAuthority("ADMIN")
-	            .requestMatchers("/lead/**","/status/**","/contactchaincontroller/**").hasAnyAuthority("SALESMANAGER")
-	            .requestMatchers("/lead/**").hasAnyAuthority("LEADSMANEGER")
-//	            .requestMatchers("/User/**").hasAnyAuthority("USER")
+
+	            .requestMatchers("/admin/**").hasAuthority("ADMIN")
+	            .requestMatchers("/lead/**").hasAnyAuthority("ADMIN", "SALESMANAGER", "LEADSMANEGER")
+	            .requestMatchers("/status/**", "/contactchaincontroller/**").hasAnyAuthority("ADMIN", "SALESMANAGER")
+
 	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
