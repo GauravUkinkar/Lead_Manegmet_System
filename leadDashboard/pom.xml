@@ -154,6 +154,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>leadManegment</finalName>
 	</build>
 
 </project>

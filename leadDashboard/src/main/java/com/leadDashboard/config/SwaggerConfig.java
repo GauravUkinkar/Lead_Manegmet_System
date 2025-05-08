@@ -31,7 +31,11 @@ public class SwaggerConfig {
 	                                        .name(securitySchemeName)
 	                                        .type(SecurityScheme.Type.HTTP)
 	                                        .scheme("bearer")
-	                                        .bearerFormat("JWT")));
+	                                        .bearerFormat("JWT")))
+	                .servers(List.of(
+	                        new Server().url("http://localhost:8080").description("Local Server"),
+	                        new Server().url("https://tomcat.diwise.in/leadManegment").description("Production Server")
+	                ));
 	    }
 //	@Bean
 //	public OpenAPI customOpenAPI() {
