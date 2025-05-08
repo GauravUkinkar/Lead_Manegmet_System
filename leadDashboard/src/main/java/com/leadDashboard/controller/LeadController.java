@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,6 +54,13 @@ public class LeadController {
 	public ResponseEntity<List<Message<LeadDto>>>GetAllLead(){
 		List<Message<LeadDto>> message=leadservice.GetAllLead();
 		return ResponseEntity.status(HttpStatus.OK).body(message);
+	}
+	@DeleteMapping("/deleteLead")
+	public ResponseEntity<Message<LeadDto>>DeleteClient(@RequestParam("lid") int lid){
+		log.info("In usercontroller login() with requesty:{}",lid);
+		Message<LeadDto> message=leadservice.deleteLead(lid);
+		HttpStatus httpStatus=HttpStatus.valueOf(message.getStatus().value());
+		return ResponseEntity.status(httpStatus).body(message);
 	}
 
 

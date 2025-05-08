@@ -55,6 +55,7 @@ public interface Constants {
 	String LEAD_UPDATED = "Lead Updated";
 	String LEAD_NOT_FOUND = "Lead not found";
 	String LEAD_FOUND = "Lead found";
+	String LEAD_DELETED = "Lead deleted Successfully";
 	
 
 	

@@ -10,6 +10,7 @@ public interface LeadService {
 	public Message<LeadDto>UpdateLead(LeadDto request);
 	public Message<LeadDto>GetLeadById(int lid);
 	public List<Message<LeadDto>>GetAllLead();
+	public Message<LeadDto>deleteLead(int lid);
 	
 
 }

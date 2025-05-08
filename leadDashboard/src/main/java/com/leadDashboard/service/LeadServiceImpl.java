@@ -1,4 +1,4 @@
-package com.leadDashboard.service;
+  package com.leadDashboard.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class LeadServiceImpl implements LeadService {
 				return response;	
 			}
 			Lead lead = leadmapperimpl.leadDtoToLead(request);
-			leadrepository.save(lead);
+			leadrepository.save(lead); 
 			LeadDto leadDto = leadmapperimpl.leadToLeadDto(lead);
 			
 			response.setStatus(HttpStatus.OK);
@@ -57,6 +57,11 @@ public class LeadServiceImpl implements LeadService {
 				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
 				return response;
 			}
+			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
+				response.setStatus(HttpStatus.NOT_FOUND);
+				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
+	            return response;
+	        }
 			lead.setBDManagerAssigned(request.getBDManagerAssigned());
 			lead.setClientName(request.getClientName());
 			lead.setComments(request.getComments());
@@ -106,6 +111,11 @@ public class LeadServiceImpl implements LeadService {
 				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
 				return response;
 			}
+			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
+				response.setStatus(HttpStatus.NOT_FOUND);
+				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
+	            return response;
+	        }
 			LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
 			response.setStatus(HttpStatus.OK);
 			response.setResponseMessage(Constants.LEAD_FOUND);
@@ -139,6 +149,39 @@ public class LeadServiceImpl implements LeadService {
 			return message;
 		}
 		
+	}
+
+	@Override
+	public Message<LeadDto> deleteLead(int lid) {
+		Message<LeadDto> response = new Message<>();
+		try {
+			Lead lead = new Lead();
+			lead=leadrepository.getById(lid);
+			
+			if(lead == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
+				return response;
+			}
+			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
+				response.setStatus(HttpStatus.NOT_FOUND);
+				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
+	            return response;
+	        }
+			lead.setDeletedTag("True");
+			leadrepository.save(lead);
+			LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
+			response.setStatus(HttpStatus.OK);
+			response.setResponseMessage(Constants.LEAD_DELETED);
+			response.setData(dto);
+			return response;
+		} catch (Exception e) {
+			System.err.println("Error deleting Lead:" +e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setResponseMessage(Constants.SOMETHING_WENT_WRONG + e.getMessage());
+			return response;
+		}
+				
 	}
 
 }
