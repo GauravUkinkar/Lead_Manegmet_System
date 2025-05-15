@@ -294,7 +294,7 @@ private String password;
 			    return message;
 			}
 			message.setStatus(HttpStatus.OK);
-			message.setResponseMessage(Constants.USER_DELETED);
+			message.setResponseMessage(Constants.USER_FOUND);
 			message.setData(userMapper.toUserDto(user));
 			return message;
 		}catch (Exception e) {
