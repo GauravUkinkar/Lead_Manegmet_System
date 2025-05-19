@@ -3,10 +3,15 @@ package com.leadDashboard.service;
 
 
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import com.leadDashboard.Dto.Message;
 import com.leadDashboard.Dto.StatusDto;
 import com.leadDashboard.model.Status;
@@ -165,25 +170,30 @@ private final StatusRepository statusRepository;
 		
 	}
 	@Override
-	public List<Message<StatusDto>> getAllStatus() {
-		List<Message<StatusDto>> message = new ArrayList<>();
-		try {
-			List<Status> statuses = statusRepository.findAll();
-			for(Status status : statuses) {
-				StatusDto dto = new StatusDto();
-				dto.setId(status.getId());
-				dto.setStatus(status.getStatus());
-				
-				message.add(new Message<StatusDto>(HttpStatus.OK,"Status found successfully",dto));
-			}
-			return message;
-		} catch (Exception e) {
-			message.add(new Message<StatusDto>(HttpStatus.INTERNAL_SERVER_ERROR,
-					Constants.SOMETHING_WENT_WRONG +e.getMessage(),null));
-			return message;
-		}
-		
+	public Map<String, Object> getAllStatus() {
+	    Map<String, Object> responseMap = new LinkedHashMap<>();
+	    try {
+	        List<Status> statuses = statusRepository.findAll();
+
+	        List<StatusDto> dtoList = statuses.stream().map(status -> {
+	            StatusDto dto = new StatusDto();
+	            dto.setId(status.getId());
+	            dto.setStatus(status.getStatus());
+	            return dto;
+	        }).collect(Collectors.toList());
+
+	        responseMap.put("status", HttpStatus.OK);
+	        responseMap.put("message", "Status found successfully");
+	        responseMap.put("data", dtoList);
+
+	    } catch (Exception e) {
+	        responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+	        responseMap.put("message", Constants.SOMETHING_WENT_WRONG + ": " + e.getMessage());
+	        responseMap.put("data", Collections.emptyList());
+	    }
+	    return responseMap;
 	}
+
 	}
 		    
 

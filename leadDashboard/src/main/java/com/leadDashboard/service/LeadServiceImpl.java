@@ -1,7 +1,10 @@
   package com.leadDashboard.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -133,23 +136,35 @@ public class LeadServiceImpl implements LeadService {
 	}
 
 	@Override
-	public List<Message<LeadDto>> GetAllLead() {
-		List<Message<LeadDto>> message = new ArrayList<>();
-		try {
-			List<Lead> leads = leadrepository.findAll();
-			for (Lead lead : leads) {
-				LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
-				
-				message.add(new Message<LeadDto>(HttpStatus.OK,"Lead found successfully",dto));
-			}
-			return message;
-		} catch (Exception e) {
-			message.add(new Message<LeadDto>(HttpStatus.INTERNAL_SERVER_ERROR,
-					Constants.SOMETHING_WENT_WRONG + e.getMessage(),null));
-			return message;
-		}
-		
+	public  Map<String, Object> getAllLead() {
+		Map<String, Object> responseMap = new LinkedHashMap<>(); 
+	    try {
+	        List<Lead> leads = leadrepository.findAll();
+
+	        if (leads == null || leads.isEmpty()) {
+	            responseMap.put("status", HttpStatus.NOT_FOUND);
+	            responseMap.put("message", "No leads found");
+	            responseMap.put("data", Collections.emptyList());
+	            return responseMap;
+	        }
+
+	        List<LeadDto> leadDtos = leads.stream()
+	                .map(leadmapperimpl::leadToLeadDto)
+	                .collect(Collectors.toList());
+
+	        responseMap.put("status", HttpStatus.OK);
+	        responseMap.put("message", "Leads found successfully");
+	        responseMap.put("data", leadDtos);
+	        return responseMap;
+
+	    } catch (Exception e) {
+	        responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+	        responseMap.put("message", "Something went wrong: " + e.getMessage());
+	        responseMap.put("data", Collections.emptyList());
+	        return responseMap;
+	    }
 	}
+
 
 	@Override
 	public Message<LeadDto> deleteLead(int lid) {

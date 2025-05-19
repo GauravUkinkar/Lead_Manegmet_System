@@ -1,6 +1,6 @@
 package com.leadDashboard.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +61,16 @@ public class StatusController {
 		return ResponseEntity.status(httpStatus).body(message);
 	}
 	@GetMapping("/getAllStatus")
-	public ResponseEntity<List<Message<StatusDto>>>GetAllClients(){
-		List<Message<StatusDto>> message=statusservice.getAllStatus();
-		return ResponseEntity.status(HttpStatus.OK).body(message);
+	public ResponseEntity<Map<String, Object>> getAllStatus() {
+	    log.info("In StatusController getAllStatus()");
+	    Map<String, Object> response = statusservice.getAllStatus();
+
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
 	}
 	@PostMapping("/ChangePassword")
 	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {

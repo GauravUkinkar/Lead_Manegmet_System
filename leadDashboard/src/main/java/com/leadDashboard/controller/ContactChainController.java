@@ -1,6 +1,7 @@
 package com.leadDashboard.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +52,20 @@ public class ContactChainController {
 		return ResponseEntity.status(httpStatus).body(message);
 	}
 	@GetMapping("/getAllcontactchain")
-	public ResponseEntity<List<Message<ContactchainDto>>> getAllcontactchain(@RequestParam("page") int page,@RequestParam("size") int size){
-		log.info("In contactchaincontroller getAllcontactchain()");
-		List<Message<ContactchainDto>> message=Service.getAllcontactchain( page, size);
-		return ResponseEntity.status(HttpStatus.OK).body(message);
+	public ResponseEntity<Map<String, Object>> getAllContactChain(
+	        @RequestParam(value = "page", required = true) Integer page,
+	        @RequestParam(value = "size", required = true) Integer size) {
+
+	    log.info("In ContactChainController getAllContactChain()");
+	    Map<String, Object> response = Service.getAllContactChain(page, size);
+
+	    // Extract and use status from the map
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
 	}
 	@GetMapping("/getcontactchainByLid")
 	public ResponseEntity<List<Message<ContactchainDto>>> getcontactchainByLid(@RequestParam ("lid") int lid){

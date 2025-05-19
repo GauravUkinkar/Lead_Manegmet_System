@@ -18,7 +18,6 @@ public class UserDto {
 	private String name;
 	private String role;
 	private String otp;
-	public String deltedTag;
 	public String token;
 
 }

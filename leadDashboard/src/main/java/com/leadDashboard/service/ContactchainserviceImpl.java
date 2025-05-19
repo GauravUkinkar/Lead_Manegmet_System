@@ -1,7 +1,11 @@
 package com.leadDashboard.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,43 +92,39 @@ public class ContactchainserviceImpl implements Contactchainservice {
 		}
 	}
 	@Override
-	public List<Message<ContactchainDto>> getAllcontactchain(Integer page, Integer size) {
-		 List<Message<ContactchainDto>> messages = new ArrayList<>();
-		    
-		    try {
-		        int pageNumber = (page == null || page <= 0) ? 0 : page - 1;
-		        int pageSize = (size == null || size <= 0) ? 10 : size;
-		        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	public Map<String, Object> getAllContactChain(Integer page, Integer size) {
+	    Map<String, Object> responseMap = new LinkedHashMap<>(); // maintains insertion order
+	    try {
+	        int pageNumber = (page == null || page <= 0) ? 0 : page - 1;
+	        int pageSize = (size == null || size <= 0) ? 10 : size;
 
-		        Page<Contactchain> lead = contactchainRepository.findAll(pageable);
+	        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	        Page<Contactchain> contacts = contactchainRepository.findAll(pageable);
 
-		        if (lead == null || lead.isEmpty()) {
-		            Message<ContactchainDto> message = new Message<>();
-		            message.setStatus(HttpStatus.NOT_FOUND);
-		            message.setResponseMessage(Constants.RECORD_NOT_FOUND);
-		            messages.add(message);
-		            return messages;
-		        }
+	        if (contacts == null || contacts.isEmpty()) {
+	            responseMap.put("status", HttpStatus.NOT_FOUND);
+	            responseMap.put("message", Constants.RECORD_NOT_FOUND);
+	            responseMap.put("data", Collections.emptyList());
+	            return responseMap;
+	        }
 
-		        for (Contactchain user : lead) {
-		            Message<ContactchainDto> message = new Message<>();
-		            message.setStatus(HttpStatus.OK);
-		            message.setResponseMessage(Constants.USER_FOUND);
-		            message.setData(mapper.modeltoDto(user));
-		            messages.add(message);
-		        }
+	        List<ContactchainDto> contactDtos = contacts.stream()
+	                .map(mapper::modeltoDto)
+	                .collect(Collectors.toList());
 
-		        return messages;
+	        responseMap.put("status", HttpStatus.OK);
+	        responseMap.put("message", Constants.USER_FOUND);
+	        responseMap.put("data", contactDtos);
+	        return responseMap;
 
-		    } catch (Exception e) {
-		        Message<ContactchainDto> errorMessage = new Message<>();
-		        errorMessage.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		        errorMessage.setResponseMessage(Constants.SOMETHING_WENT_WRONG + ": " + e.getMessage());
-		        log.error(errorMessage.getResponseMessage());
-		        messages.add(errorMessage);
-		        return messages;
-		    }
-		}
+	    } catch (Exception e) {
+	        log.error(Constants.SOMETHING_WENT_WRONG + " " + e.getMessage());
+	        responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+	        responseMap.put("message", e.getMessage());
+	        responseMap.put("data", Collections.emptyList());
+	        return responseMap;
+	    }
+	}
 	@Override
 	public List<Message<ContactchainDto>> getcontactchainByLid(Integer lid) {
 		 List<Message<ContactchainDto>> messages = new ArrayList<>();

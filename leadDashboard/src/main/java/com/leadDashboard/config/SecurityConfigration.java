@@ -41,11 +41,10 @@ public class SecurityConfigration {
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 	        .authorizeHttpRequests(registry -> registry
 	            .requestMatchers(
-	            	            "/leadManegment/swagger-ui/**",
-	            	            "/leadManegment/v3/api-docs/**",
-	            	            "/leadManegment/swagger-resources/**",
-	            	            "/leadManegment/webjars/**",
-	            	            "/leadManegment/User/LoginUser" // 
+	            	            "/swagger-ui/**",
+	            	            "/v3/api-docs/**",
+	            	            "/swagger-resources/**",
+	            	            "/webjars/**"// 
 	            ).permitAll()
 
 	            
@@ -77,7 +76,7 @@ public class SecurityConfigration {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 	    CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(Arrays.asList("https://tomcat.diwise.in", "http://localhost:8080")); // ✅ Explicitly specify allowed origin
+	    configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://tomcat.diwise.in","http://localhost:8080")); // ✅ Explicitly specify allowed origin
 	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
 	    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // ✅ Explicitly allow "Authorization"
 	    configuration.setAllowCredentials(true);

@@ -1,10 +1,9 @@
 package com.leadDashboard.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,11 +54,17 @@ public class LeadController {
 		return ResponseEntity.status(httpStatus).body(message);
 	}
 	@GetMapping("/getAllLead")
-	public ResponseEntity<List<Message<LeadDto>>>GetAllLead(){
-		List<Message<LeadDto>> message=leadservice.GetAllLead();
-		return ResponseEntity.status(HttpStatus.OK).body(message);
-	}
-	@PostMapping("/ChangePassword")
+	public ResponseEntity<Map<String, Object>> getAllLeads() {
+	    log.info("In LeadController getAllLeads()");
+	    Map<String, Object> response = leadservice.getAllLead();
+
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
+	}	@PostMapping("/ChangePassword")
 	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {
 	 log.info("In UserController changePassword() with request: {}", request);
 		Message<UserDto> message = service.changePassword(request);

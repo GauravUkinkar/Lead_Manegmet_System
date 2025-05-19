@@ -1,11 +1,13 @@
 package com.leadDashboard.service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -215,48 +217,43 @@ private String password;
 		}
 
 	@Override
-	public List<Message<UserDto>> getAllUsers(Integer page, Integer size) {
-		List<Message<UserDto>> messages = new ArrayList<>(); 
+	public Map<String, Object> getAllUsers(Integer page, Integer size) {
+	    Map<String, Object> responseMap = new LinkedHashMap<>(); // maintains insertion order
 	    try {
-	    	 int pageNumber = (page == null || page <= 0) ? 0 : page - 1;
+	        int pageNumber = (page == null || page <= 0) ? 0 : page - 1;
+	        int pageSize = (size == null || size <= 0) ? 10 : size;
 
-	         int pageSize = (size == null || size <= 0) ? 10 : size;
+	        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	        Page<User> users = userRepository.findAll(pageable);
 
-	         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-			Page<User> users = userRepository.findAll(pageable);
-	        
-	        if (users == null || users.isEmpty()) { 
-	            Message<UserDto> message = new Message<>();
-	            message.setStatus(HttpStatus.NOT_FOUND);
-	            message.setResponseMessage(Constants.RECORD_NOT_FOUND);
-	            messages.add(message);
-	            return messages;
+	        if (users == null || users.isEmpty()) {
+	            responseMap.put("status", HttpStatus.NOT_FOUND);
+	            responseMap.put("message", Constants.RECORD_NOT_FOUND);
+	            responseMap.put("data", Collections.emptyList());
+	            return responseMap;
 	        }
-	        
-	        for (User user : users) { 
-	            Message<UserDto> message = new Message<>();
-	            
-	            if ("True".equalsIgnoreCase(user.getDeltedTag())) { 
-	                message.setStatus(HttpStatus.NOT_FOUND);
-	                message.setResponseMessage(Constants.RECORD_NOT_FOUND);
-	            } else {
-	                message.setStatus(HttpStatus.OK);
-	                message.setResponseMessage(Constants.USER_FOUND);
-	                message.setData(userMapper.toUserDto(user)); 
-	            }
-	            messages.add(message); 
-	        }
-	        
-	        return messages; 
+
+	        List<UserDto> userDtos = users.stream()
+	                .filter(user -> !"True".equalsIgnoreCase(user.getDeltedTag()))
+	                .map(userMapper::toUserDto)
+	                .collect(Collectors.toList());
+
+	        responseMap.put("status", HttpStatus.OK);
+	        responseMap.put("message", Constants.USER_FOUND);
+	        responseMap.put("data", userDtos);
+	        return responseMap;
+
 	    } catch (Exception e) {
-	        Message<UserDto> errorMessage = new Message<>();
-	        errorMessage.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-	        errorMessage.setResponseMessage(e.getMessage());
-	        log.error(Constants.SOMETHING_WENT_WRONG + "  " + errorMessage.getResponseMessage());
-	        messages.add(errorMessage);
-	        return messages;
+	        log.error(Constants.SOMETHING_WENT_WRONG + " " + e.getMessage());
+	        responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+	        responseMap.put("message", e.getMessage());
+	        responseMap.put("data", Collections.emptyList());
+	        return responseMap;
 	    }
 	}
+
+
+
 
 	@Override
 	public Message<UserDto> deleteUser(Integer id) {

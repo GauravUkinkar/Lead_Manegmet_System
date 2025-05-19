@@ -1,6 +1,7 @@
 package com.leadDashboard.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,16 +61,19 @@ public class UserController {
 	}
 
 	@GetMapping("/GetAllUsers")
-	public ResponseEntity<List<Message<UserDto>>> getAllUsers(@RequestParam("Page")int page,@RequestParam("Size")int size) {
-		log.info("In UserController getAllUsers()");
-		List<Message<UserDto>> message=service.getAllUsers(page, size);
-		return ResponseEntity.status(HttpStatus.OK).body(message);
-	}
-	@GetMapping("/getUserById")
-	public ResponseEntity<Message<UserDto>> getUserById(@RequestParam("UserId") int id) {
-		log.info("In UserController getUserById() with request: {}", id);
-		Message<UserDto> message = service.getUserById(id);
-		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
-		return ResponseEntity.status(httpStatus).body(message);
+	public ResponseEntity<Map<String, Object>> getAllUsers(
+	        @RequestParam(value = "Page", required = false) Integer page,
+	        @RequestParam(value = "Size", required = false) Integer size) {
+
+	    log.info("In UserController getAllUsers()");
+	    Map<String, Object> response = service.getAllUsers(page, size);
+
+	    // Extract HttpStatus from the response
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
 	}
 }

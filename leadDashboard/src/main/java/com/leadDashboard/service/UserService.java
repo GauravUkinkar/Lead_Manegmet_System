@@ -1,6 +1,7 @@
 package com.leadDashboard.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.leadDashboard.Dto.ChangePasswordDto;
 import com.leadDashboard.Dto.LoginRequest;
@@ -15,7 +16,7 @@ public interface UserService {
 	public Message<UserDto>loginUser(LoginRequest request);
 	public Message<UserDto>sendOtp(String email);
 	public Message<UserDto>updatePassword(ChangePasswordDto request);
-    public List<Message<UserDto>>getAllUsers(Integer page, Integer size);
+    public Map<String, Object>getAllUsers(Integer page, Integer size);
 //	public Message<UserDto>updateUser(UserDto request);
 	public Message<UserDto>deleteUser(Integer id);
 	public Message<UserDto>getUserById(Integer id);
