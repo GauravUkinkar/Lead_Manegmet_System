@@ -14,11 +14,10 @@ public class UserMapperImpl implements UserMapper {
 	 private PasswordEncoder passwordEncoder;
 	@Override
 	public UserDto toUserDto(User user) {
-		return new UserDto().setDeltedTag(user.getDeltedTag())
+		return new UserDto()
 				.setEmail(user.getEmail())
 				.setName(user.getName())
 				.setId(user.getId())
-				.setPassword(user.getPassword())
 				.setRole(user.getRole());
 	}
 

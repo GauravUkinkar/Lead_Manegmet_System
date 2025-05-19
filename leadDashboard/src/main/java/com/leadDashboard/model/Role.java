@@ -1,11 +1,11 @@
 package com.leadDashboard.model;
 
 public enum Role {
-	SUPERADMIN,
-	//(Mam)
 	ADMIN,
+	//(Mam)
+	SALESMANAGER,
 	//(Amar)
-	USER,
+	LEADSMANEGER,
 	//(chitralekha)
 
 }

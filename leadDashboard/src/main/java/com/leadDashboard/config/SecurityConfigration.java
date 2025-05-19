@@ -41,16 +41,28 @@ public class SecurityConfigration {
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 	        .authorizeHttpRequests(registry -> registry
 	            .requestMatchers(
-	                "/swagger-ui/**",
-	                "/v3/api-docs/**",
-	                "/swagger-resources/**",
-	                "/webjars/**"
+	            	            "/swagger-ui/**",
+	            	            "/v3/api-docs/**",
+	            	            "/swagger-resources/**",
+	            	            "/webjars/**"// 
 	            ).permitAll()
-	            .requestMatchers("/superadmin/**","/status/**","/lead/**").permitAll()
-	            .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-	            .requestMatchers("/User/**").hasAnyAuthority("USER")
+
+	            
+//	            .requestMatchers("/User/**").permitAll()
+//	            .requestMatchers("/admin/**","/status/**","/contactchaincontroller/**","/lead/**").hasAnyAuthority("ADMIN")
+//	            .requestMatchers("/lead/**","/status/**","/contactchaincontroller/**").hasAnyAuthority("SALESMANAGER")
+//	            .requestMatchers("/lead/**").hasAnyAuthority("LEADSMANEGER")
+////	            .requestMatchers("/User/**").hasAnyAuthority("USER")
+//	            .anyRequest().authenticated()
+//	        )
+	            .requestMatchers("/User/**").permitAll()
+
+	            .requestMatchers("/admin/**").hasAuthority("ADMIN")
+	            .requestMatchers("/lead/**").hasAnyAuthority("ADMIN", "SALESMANAGER", "LEADSMANEGER")
+	            .requestMatchers("/status/**", "/contactchaincontroller/**").hasAnyAuthority("ADMIN", "SALESMANAGER")
+
 	            .anyRequest().authenticated()
-	        )
+	        )    
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authenticationProvider(authenticationProvider())
 	        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -64,7 +76,7 @@ public class SecurityConfigration {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 	    CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(Arrays.asList("*")); // ✅ Explicitly specify allowed origin
+	    configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://tomcat.diwise.in","http://localhost:8080")); // ✅ Explicitly specify allowed origin
 	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
 	    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // ✅ Explicitly allow "Authorization"
 	    configuration.setAllowCredentials(true);

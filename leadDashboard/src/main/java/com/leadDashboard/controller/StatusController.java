@@ -1,6 +1,6 @@
 package com.leadDashboard.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.leadDashboard.Dto.ChangePasswordDto;
 import com.leadDashboard.Dto.Message;
 import com.leadDashboard.Dto.StatusDto;
+import com.leadDashboard.Dto.UserDto;
 import com.leadDashboard.service.StatusService;
+import com.leadDashboard.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,6 +29,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class StatusController {
 	private final StatusService statusservice;
+	private final UserService service;
 	
 	@PostMapping("/addStatus")
 	public ResponseEntity<Message<StatusDto>>AddClient(@RequestBody StatusDto request){
@@ -58,9 +61,23 @@ public class StatusController {
 		return ResponseEntity.status(httpStatus).body(message);
 	}
 	@GetMapping("/getAllStatus")
-	public ResponseEntity<List<Message<StatusDto>>>GetAllClients(){
-		List<Message<StatusDto>> message=statusservice.getAllStatus();
-		return ResponseEntity.status(HttpStatus.OK).body(message);
+	public ResponseEntity<Map<String, Object>> getAllStatus() {
+	    log.info("In StatusController getAllStatus()");
+	    Map<String, Object> response = statusservice.getAllStatus();
+
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
+	}
+	@PostMapping("/ChangePassword")
+	public ResponseEntity<Message<UserDto>> changePassword(@RequestBody ChangePasswordDto request) {
+	 log.info("In UserController changePassword() with request: {}", request);
+		Message<UserDto> message = service.changePassword(request);
+		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
+		return ResponseEntity.status(httpStatus).body(message);
 	}
 
 }
