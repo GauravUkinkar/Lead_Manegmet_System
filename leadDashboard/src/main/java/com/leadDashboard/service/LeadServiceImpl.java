@@ -1,6 +1,12 @@
   package com.leadDashboard.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.leadDashboard.Dto.LeadDto;
 import com.leadDashboard.Dto.Message;
@@ -198,5 +205,59 @@ public class LeadServiceImpl implements LeadService {
 		}
 				
 	}
+
+	@Override
+	public void saveLeadsFromCsv(MultipartFile file) {
+		  try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+	            List<Lead> leads = new ArrayList<>();
+	            String line;
+	            boolean headerSkipped = false;
+
+	            while ((line = reader.readLine()) != null) {
+	                if (!headerSkipped) {
+	                    headerSkipped = true;
+	                    continue; // Skip header
+	                }
+
+	                String[] fields = line.split(",");
+
+	                Lead lead = new Lead();
+	                lead.setIsItLead(fields[0]);
+	                lead.setDate(parseDate(fields[1]));
+	                lead.setEntryMadeBy(fields[2]);
+	                lead.setNameOfBDManager(fields[3]);
+	                lead.setLeadGenerationDate(parseDate(fields[4]));
+	                lead.setClientName(fields[5]);
+	                lead.setStatus(fields[6]);
+	                lead.setOverAllStatus(fields[7]);
+	                lead.setContactPerson(fields[8]);
+	                lead.setEmailId(fields[9]);
+	                lead.setContactNumber(fields[10]);
+	                lead.setReferance(fields[11]);
+	                lead.setWebsite(fields[12]);
+	                lead.setComments(fields[13]);
+	                lead.setDateOfFutureContact(fields[14]);
+	                lead.setBDManagerAssigned(fields[15]);
+	                lead.setUpdatedStatusComments(fields[16]);
+	                lead.setInitialPraposalDate(fields[17]);
+	                lead.setFuturePraposalDate(fields[18]);
+	                lead.setDeletedTag("False");
+	                leads.add(lead);
+	               
+	            }
+              
+	            leadrepository.saveAll(leads);
+	        } catch (IOException e) {
+	            throw new RuntimeException("Error reading CSV file", e);
+	        }
+	    }
+
+	    private Date parseDate(String dateStr) {
+	        try {
+	            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+	        } catch (Exception e) {
+	            return null;
+	        }
+	    }
 
 }

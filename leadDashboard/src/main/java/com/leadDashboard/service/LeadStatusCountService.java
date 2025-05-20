@@ -1,9 +1,11 @@
 package com.leadDashboard.service;
 
+import java.util.List;
+
 import com.leadDashboard.Dto.LeadStatusCountDto;
 
 public interface LeadStatusCountService {
-	public LeadStatusCountDto getLeadStatusCounts(  );
+	public List<LeadStatusCountDto> getLeadStatusCounts();
 	
 	
 

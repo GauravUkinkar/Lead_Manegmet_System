@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.leadDashboard.Dto.ChangePasswordDto;
 import com.leadDashboard.Dto.LeadDto;
@@ -38,6 +39,17 @@ public class LeadController {
 		HttpStatus httpStatus=HttpStatus.valueOf(message.getStatus().value());
 		return ResponseEntity.status(httpStatus).body(message);
 	}
+		
+		@PostMapping("/upload")
+	    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile file) {
+	        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
+	            return ResponseEntity.badRequest().body("Please upload a valid CSV file.");
+	        }
+
+	        leadservice.saveLeadsFromCsv(file);
+	        return ResponseEntity.ok("CSV uploaded and data saved successfully.");
+	    }
+	
 	@PutMapping("/updateLead")
 	public ResponseEntity<Message<LeadDto>>UpdateClient(@RequestBody LeadDto request){
 		log.info("In usercontroller login() with request:{}",request);

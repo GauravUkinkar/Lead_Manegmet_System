@@ -3,6 +3,8 @@ package com.leadDashboard.service;
 
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.leadDashboard.Dto.LeadStatusCountDto;
@@ -16,7 +18,7 @@ public class LeadStatusCountsServiceImpl implements LeadStatusCountService {
 	private final LeadRepository leadrepository;
 
 	@Override
-	public LeadStatusCountDto getLeadStatusCounts() {
+	public List<LeadStatusCountDto> getLeadStatusCounts() {
 		return leadrepository.findLeadStatusCount();
 	}
 	

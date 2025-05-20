@@ -1,5 +1,7 @@
 package com.leadDashboard.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,14 +13,12 @@ import com.leadDashboard.model.Lead;
 @Repository
 public interface LeadRepository extends JpaRepository<Lead, Integer> {
 	@Query("SELECT new com.leadDashboard.Dto.LeadStatusCountDto(" +
-			"t.lid, " +
 			"SUM(CASE WHEN t.overAllStatus = 'Close' THEN 1 ELSE 0 END), " +
 			"SUM(CASE WHEN t.overAllStatus = 'Open' THEN 1 ELSE 0 END)) " +
 			"FROM Lead t " +
-			"WHERE t.deletedTag = 'false' " +
-			"GROUP BY t.lid")
+			"WHERE t.deletedTag = 'false' " )
 	
-	    LeadStatusCountDto findLeadStatusCount();
+	List<LeadStatusCountDto> findLeadStatusCount();
 
 	LeadStatusCountDto findLeadStatusCountByLid(int lid);
 
