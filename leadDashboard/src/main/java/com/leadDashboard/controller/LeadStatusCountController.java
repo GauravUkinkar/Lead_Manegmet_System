@@ -34,5 +34,3 @@ public class LeadStatusCountController {
 //	    List<LeadStatusCountDto> dtoList = leadstatuscountservice.getLeadStatusCounts();
 //	    return ResponseEntity.ok(dtoList);
 	}
-
-}
