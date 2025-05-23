@@ -60,6 +60,7 @@ public interface Constants {
 	String CONTACT_CHAIN_UPDATED = "contact chain updated successfully";
 	String CONTACT_CHAIN_NOT_FOUND = "Contact chain Not Found";
 	String CONTACT_CHAIN_FOUND = "Contact Chain Found successfully";
+	String RECORD_FOUND = "Record Found";
 	
 
 	
