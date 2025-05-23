@@ -24,12 +24,10 @@ public class LeadStatusCountController {
 	private final LeadStatusCountService leadstatuscountservice;
 	
 	@GetMapping("/lid")
-	public ResponseEntity<Message<List<LeadStatusCountDto>>> getStatusCount() {
-		log.info("In usercontroller getStatusCount()");
-		    List<Message<LeadStatusCountDto>> dtoList = leadstatuscountservice.getLeadStatusCounts();
-		    HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
-		    return ResponseEntity.status(httpStatus).body(message);
-		}
+    public ResponseEntity<Message<List<LeadStatusCountDto>>> getLeadStatusCounts() {
+        Message<List<LeadStatusCountDto>> response = leadstatuscountservice.getLeadStatusCounts();
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 
 //	    List<LeadStatusCountDto> dtoList = leadstatuscountservice.getLeadStatusCounts();
 //	    return ResponseEntity.ok(dtoList);

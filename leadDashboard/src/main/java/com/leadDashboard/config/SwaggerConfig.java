@@ -33,7 +33,7 @@ public class SwaggerConfig {
 	                                        .scheme("bearer")
 	                                        .bearerFormat("JWT")))
 	                .servers(List.of(
-	                        new Server().url("http://localhost:8080").description("Local Server"),
+	                        new Server().url("http://localhost:9090").description("Local Server"),
 	                        new Server().url("https://tomcat.diwise.in/leadManegment").description("Production Server")
 	                ));
 	    }
