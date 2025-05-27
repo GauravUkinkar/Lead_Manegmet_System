@@ -61,6 +61,12 @@ public interface Constants {
 	String CONTACT_CHAIN_NOT_FOUND = "Contact chain Not Found";
 	String CONTACT_CHAIN_FOUND = "Contact Chain Found successfully";
 	String RECORD_FOUND = "Record Found";
+	String INVALID_EVENT_DATA = "Invali Event Data";
+	String EVENT_ADDED = "Event Added";
+	String EVENT_NOT_FOUND = "Event not Found";
+	String EVENT_UPDATED = "Event Updated";
+	String EVENT_DELETED = "Event Deleted";
+	String EVENT_FOUND = "Event Found";
 	
 
 	
