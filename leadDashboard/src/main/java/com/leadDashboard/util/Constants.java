@@ -68,6 +68,12 @@ public interface Constants {
 	String EVENT_DELETED = "Event Deleted";
 	String EVENT_FOUND = "Event Found";
 	
+	
+	
+	
+	Object TARGET_ADDED_SUCCESSFULLY = "Target of the month is added successfully for user";
+	Object TARGETS_FOUND = "Targets found for user";
+	
 
 	
 	

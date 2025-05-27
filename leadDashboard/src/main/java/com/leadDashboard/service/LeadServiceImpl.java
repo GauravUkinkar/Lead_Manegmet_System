@@ -411,11 +411,11 @@ public class LeadServiceImpl implements LeadService {
 		 }
 
 		@Override
-		public Map<String, Object> assingLead(int lid, int uid) {
+		public Map<String, Object> assingLead(int lid, int id) {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 		    try {
 		    	Lead allLeads = leadrepository.getById(lid);
-		    	User user =repo.getById(uid);
+		    	User user =repo.getById(id);
 //		    	String id=Integer.toString(uid);
 		    	if(allLeads==null) {
 		    		responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
@@ -430,7 +430,7 @@ public class LeadServiceImpl implements LeadService {
 		            return responseMap;
 		    	}
 		    	else {
-		    		allLeads.setBDManagerAssigned(Integer.toString(uid));
+		    		allLeads.setBDManagerAssigned(Integer.toString(id));
 		    		leadrepository.save(allLeads);
 		    		LeadDto leadDto = leadmapperimpl.leadToLeadDto(allLeads);
 		    		responseMap.put("Httpstatus", HttpStatus.OK);

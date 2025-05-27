@@ -138,9 +138,9 @@ public class LeadController {
 	@PostMapping("/AssignLead")
 	public ResponseEntity<Map<String, Object>> assignLead(
 			@RequestParam int lid,
-	        @RequestParam int uid
+	        @RequestParam int id
 	        ) {
-		Map<String, Object> response = leadservice.assingLead(lid,uid);
+		Map<String, Object> response = leadservice.assingLead(lid,id);
 
 	    HttpStatus responsestatus = HttpStatus.OK;
 	    if (response.get("Httpstatus") instanceof HttpStatus) {

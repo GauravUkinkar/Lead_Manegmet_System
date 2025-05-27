@@ -57,7 +57,7 @@ public class SecurityConfigration {
 //	        )
 	            .requestMatchers("/User/**","/leadcount/**","/event/**").permitAll()
 
-	            .requestMatchers("/admin/**").hasAuthority("ADMIN")
+	            .requestMatchers("/admin/**","/Target/**").hasAuthority("ADMIN")
 	            .requestMatchers("/lead/**").hasAnyAuthority("ADMIN", "SALESMANAGER", "LEADSMANEGER")
 	            .requestMatchers("/status/**", "/contactchaincontroller/**").hasAnyAuthority("ADMIN", "SALESMANAGER")
 
