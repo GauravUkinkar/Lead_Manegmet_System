@@ -83,6 +83,71 @@ public class LeadController {
 		HttpStatus httpStatus = HttpStatus.valueOf(message.getStatus().value());
 		return ResponseEntity.status(httpStatus).body(message);
 	}
-	
+	@GetMapping("/lead-status-count")
+	public ResponseEntity<Map<String, Object>> getLeadStatusCounts(
+	        @RequestParam String startDate,
+	        @RequestParam String endDate) {
+		Map<String, Object> response = leadservice.getallStatusCount(startDate,endDate);
 
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("status") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("status");
+	    }
+
+	    return new ResponseEntity<>(response, status);
+	}
+	@GetMapping("/lead-statusFilter")
+	public ResponseEntity<Map<String, Object>> getLeadByfilter(
+			@RequestParam String status,
+	        @RequestParam String startDate,
+	        @RequestParam String endDate
+	        ) {
+		Map<String, Object> response = leadservice.getAllLeadByStatusUpdataedDateAndCurrentDat(status,startDate,endDate);
+
+	    HttpStatus responsestatus = HttpStatus.OK;
+	    if (response.get("Httpstatus") instanceof HttpStatus) {
+	    	responsestatus = (HttpStatus) response.get("Httpstatus");
+	    }
+
+	    return new ResponseEntity<>(response, responsestatus);
+	}
+	
+	@GetMapping ("/UnassignedLeads")
+	public ResponseEntity<Map<String, Object>> UnAssignedLeads(
+	        ) {
+		Map<String, Object> response = leadservice.getAllUnassignedleads();
+
+	    HttpStatus responsestatus = HttpStatus.OK;
+	    if (response.get("Httpstatus") instanceof HttpStatus) {
+	    	responsestatus = (HttpStatus) response.get("Httpstatus");
+	    }
+
+	    return new ResponseEntity<>(response, responsestatus);
+	}
+	@GetMapping("/lead-recent-updates")
+	public ResponseEntity<Map<String, Object>> getRecentLeads() {
+	    Map<String, Object> response = leadservice.getLeadsUpdatedInLast10Days();
+
+	    HttpStatus status = HttpStatus.OK;
+	    if (response.get("Httpstatus") instanceof HttpStatus) {
+	        status = (HttpStatus) response.get("Httpstatus");
+	    }
+
+	    return new ResponseEntity<>(response, status);
+	}
+	@PostMapping("/AssignLead")
+	public ResponseEntity<Map<String, Object>> assignLead(
+			@RequestParam int lid,
+	        @RequestParam int uid
+	        ) {
+		Map<String, Object> response = leadservice.assingLead(lid,uid);
+
+	    HttpStatus responsestatus = HttpStatus.OK;
+	    if (response.get("Httpstatus") instanceof HttpStatus) {
+	    	responsestatus = (HttpStatus) response.get("Httpstatus");
+	    }
+
+	    return new ResponseEntity<>(response, responsestatus);
+	}
+	
 }

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -16,11 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.leadDashboard.Dto.DatewiseStatusCount;
 import com.leadDashboard.Dto.LeadDto;
 import com.leadDashboard.Dto.Message;
 import com.leadDashboard.mapper.LeadMapper;
 import com.leadDashboard.model.Lead;
+import com.leadDashboard.model.User;
 import com.leadDashboard.repository.LeadRepository;
+import com.leadDashboard.repository.UserRepository;
 import com.leadDashboard.util.Constants;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class LeadServiceImpl implements LeadService {
 	private final LeadMapper leadmapperimpl;
 	private final LeadRepository leadrepository;
+	private final UserRepository repo;
 	@Override
 	public Message<LeadDto> AddLead(LeadDto request) {
 		Message<LeadDto> response = new Message<>();
@@ -260,4 +266,185 @@ public class LeadServiceImpl implements LeadService {
 	        }
 	    }
 
+		@Override
+		public Map<String, Object> getallStatusCount(String startDate, String endDate) {
+			 Map<String, Object> responseMap = new LinkedHashMap<>();
+
+			    try {
+			        List<DatewiseStatusCount> statusCounts = leadrepository.findAllStatusCountsBetweenDates(startDate, endDate);
+
+			        if (statusCounts == null || statusCounts.isEmpty()) {
+			            responseMap.put("status", HttpStatus.NOT_FOUND);
+			            responseMap.put("message", "No lead statuses found in the given date range.");
+			            responseMap.put("data", Collections.emptyList());
+			            return responseMap;
+			        }
+
+			      
+
+			        responseMap.put("status", HttpStatus.OK);
+			        responseMap.put("message", "Lead status counts retrieved successfully.");
+			        responseMap.put("data", statusCounts);
+			        return responseMap;
+
+			    } catch (Exception e) {
+			        responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+			        responseMap.put("message", "Something went wrong: " + e.getMessage());
+			        responseMap.put("data", Collections.emptyList());
+			        return responseMap;
+			    }
+		}
+
+		@Override
+		public Map<String, Object> getAllLeadByStatusUpdataedDateAndCurrentDat(String status, String updatedDate,
+				String endDate) {
+			 Map<String, Object> responseMap = new LinkedHashMap<>();
+			 try {
+				 List<Lead> leads  = leadrepository. findAllByStatusAndUpdatedDateBetween(status, updatedDate,endDate);
+						 
+						 if (leads== null|| leads.isEmpty()) {
+							  responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+					            responseMap.put("message", "No lead statuses found in the given date range.");
+					            responseMap.put("data", Collections.emptyList());
+					            return responseMap;
+						 }
+						  List<LeadDto> leadDtos = leads.stream()
+					                .map(leadmapperimpl::leadToLeadDto)
+					                .collect(Collectors.toList());
+
+					        responseMap.put("Httpstatus", HttpStatus.OK);
+					        responseMap.put("message", "Leads found successfully");
+					        responseMap.put("data", leadDtos);
+					        return responseMap;
+
+					    } catch (Exception e) {
+					        responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
+					        responseMap.put("message", "Something went wrong: " + e.getMessage());
+					        responseMap.put("data", Collections.emptyList());
+					        return responseMap;
+					    }
+			
+		}
+
+		@Override
+		public Map<String, Object> getAllUnassignedleads() {
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+			try {
+				 List<Lead> leads  = leadrepository.findAll();      
+				 if (leads== null|| leads.isEmpty()) {
+					  responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+			            responseMap.put("message", "No lead statuses found in the given date range.");
+			            responseMap.put("data", Collections.emptyList());
+			            return responseMap;
+				 }
+				 System.out.println("Total leads fetched: " + leads.size());
+
+				 List<LeadDto> leadDtos = leads.stream()
+						 .filter(lead -> lead.getBDManagerAssigned() == null || lead.getBDManagerAssigned().trim().isEmpty())
+				     .peek(lead -> System.out.println("Unassigned lead: " + lead.getLid())) // Log unassigned
+				     .map(leadmapperimpl::leadToLeadDto)
+				     .collect(Collectors.toList());
+
+				 System.out.println("Unassigned leads count: " + leadDtos.size());
+
+					responseMap.put("Httpstatus", HttpStatus.OK);
+					responseMap.put("message", "UnAssigned Leads Are:");
+					responseMap.put("data", leadDtos);
+					return responseMap;
+
+				} catch (Exception e) {
+					responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
+					responseMap.put("message", "Something went wrong: " + e.getMessage());
+					responseMap.put("data", Collections.emptyList());
+					return responseMap;
+				 
+			}
+		}
+		@Override
+		public Map<String, Object> getLeadsUpdatedInLast10Days(){
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+		    try {
+		    	 List<Lead> allLeads = leadrepository.findAll();
+
+		         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); // Adjust format as per your actual stored format
+		         LocalDate today = LocalDate.now();
+		         LocalDate tenDaysAgo = today.minusDays(10);
+
+		         List<Lead> filteredLeads = allLeads.stream()
+		        		    .filter(lead -> {
+		        		        try {
+		        		            String rawDate = lead.getUpdatedDate().trim();
+		        		            LocalDate updated = LocalDate.parse(rawDate, formatter);
+		        		            return (updated.isAfter(tenDaysAgo) || updated.isEqual(tenDaysAgo))
+		        		                    && (updated.isBefore(today) || updated.isEqual(today));
+		        		        } catch (Exception e) {
+		        		            return false;
+		        		        }
+		        		    })
+		        		    .sorted((lead1, lead2) -> {
+		        		        LocalDate date1 = LocalDate.parse(lead1.getUpdatedDate().trim(), formatter);
+		        		        LocalDate date2 = LocalDate.parse(lead2.getUpdatedDate().trim(), formatter);
+		        		        return date2.compareTo(date1); // Descending order
+		        		    })
+		        		    .collect(Collectors.toList());
+		         if (filteredLeads.isEmpty()) {
+		             responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+		             responseMap.put("message", "No leads updated in the last 10 days.");
+		             responseMap.put("data", Collections.emptyList());
+		             return responseMap;
+		         }
+
+		         List<LeadDto> leadDtos = filteredLeads.stream()
+		             .map(leadmapperimpl::leadToLeadDto)
+		             .collect(Collectors.toList());
+
+		         responseMap.put("Httpstatus", HttpStatus.OK);
+		         responseMap.put("message", "Leads updated in the last 10 days fetched successfully.");
+		         responseMap.put("data", leadDtos);
+		         return responseMap;
+		     } catch (Exception e) {
+		         responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
+		         responseMap.put("message", "Something went wrong: " + e.getMessage());
+		         responseMap.put("data", Collections.emptyList());
+		         return responseMap;
+		     }
+		 }
+
+		@Override
+		public Map<String, Object> assingLead(int lid, int uid) {
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+		    try {
+		    	Lead allLeads = leadrepository.getById(lid);
+		    	User user =repo.getById(uid);
+//		    	String id=Integer.toString(uid);
+		    	if(allLeads==null) {
+		    		responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+		            responseMap.put("message", "No leads found");
+		            responseMap.put("data", Collections.emptyList());
+		            return responseMap;
+		    	}
+		    	else if(user==null) {
+		    		responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+		            responseMap.put("message", "No user found");
+		            responseMap.put("data", Collections.emptyList());
+		            return responseMap;
+		    	}
+		    	else {
+		    		allLeads.setBDManagerAssigned(Integer.toString(uid));
+		    		leadrepository.save(allLeads);
+		    		LeadDto leadDto = leadmapperimpl.leadToLeadDto(allLeads);
+		    		responseMap.put("Httpstatus", HttpStatus.OK);
+		            responseMap.put("message", "Lead assigned successfully");
+		            responseMap.put("data", leadDto);
+		            return responseMap;	
+			    	
+		    	}
+		    }
+			catch (Exception e) {
+				 responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
+		         responseMap.put("message", "Something went wrong: " + e.getMessage());
+		         responseMap.put("data", Collections.emptyList());
+		         return responseMap;
+			}
+		    }
 }

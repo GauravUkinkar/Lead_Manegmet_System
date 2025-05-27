@@ -42,6 +42,7 @@ public class Lead {
 	private String initialPraposalDate;
 	private String futurePraposalDate;
 	private String deletedTag;
+	private String updatedDate;
 	
 	
 	

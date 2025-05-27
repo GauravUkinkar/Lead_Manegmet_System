@@ -32,6 +32,7 @@ public class LeadMapperImpl implements LeadMapper {
 		dto.setStatus(lead.getStatus());
 		dto.setUpdatedStatusComments(lead.getUpdatedStatusComments());
 		dto.setWebsite(lead.getWebsite());
+		dto.setUpdatedDate(lead.getUpdatedDate());
 		return dto;
 		
 		
