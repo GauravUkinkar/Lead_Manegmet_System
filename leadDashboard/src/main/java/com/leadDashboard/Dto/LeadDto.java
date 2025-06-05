@@ -28,11 +28,6 @@ public class LeadDto {
 	private String website;
 	private String comments;
 	private String dateOfFutureContact;
-	private String BDManagerAssigned;
-	private String updatedStatusComments;
-	private String initialPraposalDate;
-	private String futurePraposalDate;
-	private String deletedTag;
 	private String updatedDate;
 	
 	

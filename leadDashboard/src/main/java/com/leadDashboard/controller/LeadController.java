@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +42,7 @@ public class LeadController {
 	}
 		
 		@PostMapping("/upload")
-	    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile file) {
+	    public ResponseEntity<String> uploadCsv(@RequestPart("file") MultipartFile file) {
 	        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
 	            return ResponseEntity.badRequest().body("Please upload a valid CSV file.");
 	        }
@@ -112,18 +113,18 @@ public class LeadController {
 	    return new ResponseEntity<>(response, responsestatus);
 	}
 	
-	@GetMapping ("/UnassignedLeads")
-	public ResponseEntity<Map<String, Object>> UnAssignedLeads(
-	        ) {
-		Map<String, Object> response = leadservice.getAllUnassignedleads();
-
-	    HttpStatus responsestatus = HttpStatus.OK;
-	    if (response.get("Httpstatus") instanceof HttpStatus) {
-	    	responsestatus = (HttpStatus) response.get("Httpstatus");
-	    }
-
-	    return new ResponseEntity<>(response, responsestatus);
-	}
+//	@GetMapping ("/UnassignedLeads")
+//	public ResponseEntity<Map<String, Object>> UnAssignedLeads(
+//	        ) {
+//		Map<String, Object> response = leadservice.getAllUnassignedleads();
+//
+//	    HttpStatus responsestatus = HttpStatus.OK;
+//	    if (response.get("Httpstatus") instanceof HttpStatus) {
+//	    	responsestatus = (HttpStatus) response.get("Httpstatus");
+//	    }
+//
+//	    return new ResponseEntity<>(response, responsestatus);
+//	}
 	@GetMapping("/lead-recent-updates")
 	public ResponseEntity<Map<String, Object>> getRecentLeads() {
 	    Map<String, Object> response = leadservice.getLeadsUpdatedInLast10Days();

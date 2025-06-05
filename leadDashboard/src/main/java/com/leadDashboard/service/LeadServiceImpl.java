@@ -73,31 +73,22 @@ public class LeadServiceImpl implements LeadService {
 				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
 				return response;
 			}
-			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
-				response.setStatus(HttpStatus.NOT_FOUND);
-				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
-	            return response;
-	        }
-			lead.setBDManagerAssigned(request.getBDManagerAssigned());
+			
 			lead.setClientName(request.getClientName());
 			lead.setComments(request.getComments());
 			lead.setContactNumber(request.getContactNumber());
 			lead.setContactPerson(request.getContactPerson());
-			lead.setDate(request.getDate());
 			lead.setDateOfFutureContact(request.getDateOfFutureContact());
-			lead.setDeletedTag(request.getDeletedTag());
 			lead.setEmailId(request.getEmailId());
 			lead.setEntryMadeBy(request.getEntryMadeBy());
-			lead.setFuturePraposalDate(request.getFuturePraposalDate());
-			lead.setInitialPraposalDate(request.getInitialPraposalDate());
 			lead.setIsItLead(request.getIsItLead());
 			lead.setLeadGenerationDate(request.getLeadGenerationDate());
 			lead.setNameOfBDManager(request.getNameOfBDManager());
 			lead.setOverAllStatus(request.getOverAllStatus());
 			lead.setReferance(request.getReferance());
 			lead.setStatus(request.getStatus());
-			lead.setUpdatedStatusComments(request.getUpdatedStatusComments());
 			lead.setWebsite(request.getWebsite());
+			lead.setUpdatedDate(request.getUpdatedDate());
 			
 			leadrepository.save(lead);
 			LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
@@ -127,11 +118,7 @@ public class LeadServiceImpl implements LeadService {
 				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
 				return response;
 			}
-			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
-				response.setStatus(HttpStatus.NOT_FOUND);
-				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
-	            return response;
-	        }
+			
 			LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
 			response.setStatus(HttpStatus.OK);
 			response.setResponseMessage(Constants.LEAD_FOUND);
@@ -191,12 +178,7 @@ public class LeadServiceImpl implements LeadService {
 				response.setResponseMessage(Constants.LEAD_NOT_FOUND);
 				return response;
 			}
-			if(lead == null || "True".equalsIgnoreCase(lead.getDeletedTag())) {	
-				response.setStatus(HttpStatus.NOT_FOUND);
-				response.setResponseMessage(Constants.RECORD_NOT_FOUND);
-	            return response;
-	        }
-			lead.setDeletedTag("True");
+			
 			leadrepository.save(lead);
 			LeadDto dto = leadmapperimpl.leadToLeadDto(lead);
 			response.setStatus(HttpStatus.OK);
@@ -243,11 +225,6 @@ public class LeadServiceImpl implements LeadService {
 	                lead.setWebsite(fields[12]);
 	                lead.setComments(fields[13]);
 	                lead.setDateOfFutureContact(fields[14]);
-	                lead.setBDManagerAssigned(fields[15]);
-	                lead.setUpdatedStatusComments(fields[16]);
-	                lead.setInitialPraposalDate(fields[17]);
-	                lead.setFuturePraposalDate(fields[18]);
-	                lead.setDeletedTag("False");
 	                leads.add(lead);
 	               
 	            }
@@ -326,40 +303,40 @@ public class LeadServiceImpl implements LeadService {
 			
 		}
 
-		@Override
-		public Map<String, Object> getAllUnassignedleads() {
-			Map<String, Object> responseMap = new LinkedHashMap<>();
-			try {
-				 List<Lead> leads  = leadrepository.findAll();      
-				 if (leads== null|| leads.isEmpty()) {
-					  responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
-			            responseMap.put("message", "No lead statuses found in the given date range.");
-			            responseMap.put("data", Collections.emptyList());
-			            return responseMap;
-				 }
-				 System.out.println("Total leads fetched: " + leads.size());
-
-				 List<LeadDto> leadDtos = leads.stream()
-						 .filter(lead -> lead.getBDManagerAssigned() == null || lead.getBDManagerAssigned().trim().isEmpty())
-				     .peek(lead -> System.out.println("Unassigned lead: " + lead.getLid())) // Log unassigned
-				     .map(leadmapperimpl::leadToLeadDto)
-				     .collect(Collectors.toList());
-
-				 System.out.println("Unassigned leads count: " + leadDtos.size());
-
-					responseMap.put("Httpstatus", HttpStatus.OK);
-					responseMap.put("message", "UnAssigned Leads Are:");
-					responseMap.put("data", leadDtos);
-					return responseMap;
-
-				} catch (Exception e) {
-					responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
-					responseMap.put("message", "Something went wrong: " + e.getMessage());
-					responseMap.put("data", Collections.emptyList());
-					return responseMap;
-				 
-			}
-		}
+//		@Override
+//		public Map<String, Object> getAllUnassignedleads() {
+//			Map<String, Object> responseMap = new LinkedHashMap<>();
+//			try {
+//				 List<Lead> leads  = leadrepository.findAll();      
+//				 if (leads== null|| leads.isEmpty()) {
+//					  responseMap.put("Httpstatus", HttpStatus.NOT_FOUND);
+//			            responseMap.put("message", "No lead statuses found in the given date range.");
+//			            responseMap.put("data", Collections.emptyList());
+//			            return responseMap;
+//				 }
+//				 System.out.println("Total leads fetched: " + leads.size());
+//
+//				 List<LeadDto> leadDtos = leads.stream()
+//						 .filter(lead -> lead.getBDManagerAssigned() == null || lead.getBDManagerAssigned().trim().isEmpty())
+//				     .peek(lead -> System.out.println("Unassigned lead: " + lead.getLid())) // Log unassigned
+//				     .map(leadmapperimpl::leadToLeadDto)
+//				     .collect(Collectors.toList());
+//
+//				 System.out.println("Unassigned leads count: " + leadDtos.size());
+//
+//					responseMap.put("Httpstatus", HttpStatus.OK);
+//					responseMap.put("message", "UnAssigned Leads Are:");
+//					responseMap.put("data", leadDtos);
+//					return responseMap;
+//
+//				} catch (Exception e) {
+//					responseMap.put("Httpstatus", HttpStatus.INTERNAL_SERVER_ERROR);
+//					responseMap.put("message", "Something went wrong: " + e.getMessage());
+//					responseMap.put("data", Collections.emptyList());
+//					return responseMap;
+//				 
+//			}
+//		}
 		@Override
 		public Map<String, Object> getLeadsUpdatedInLast10Days(){
 			Map<String, Object> responseMap = new LinkedHashMap<>();
@@ -430,7 +407,7 @@ public class LeadServiceImpl implements LeadService {
 		            return responseMap;
 		    	}
 		    	else {
-		    		allLeads.setBDManagerAssigned(Integer.toString(id));
+		    		allLeads.setNameOfBDManager(user.getName());
 		    		leadrepository.save(allLeads);
 		    		LeadDto leadDto = leadmapperimpl.leadToLeadDto(allLeads);
 		    		responseMap.put("Httpstatus", HttpStatus.OK);

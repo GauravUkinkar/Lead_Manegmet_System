@@ -17,8 +17,8 @@ public interface LeadRepository extends JpaRepository<Lead, Integer> {
 	@Query("SELECT new com.leadDashboard.Dto.LeadStatusCountDto(" +
 		       "SUM(CASE WHEN LOWER(TRIM(t.overAllStatus)) = 'open' THEN 1 ELSE 0 END), " +
 		       "SUM(CASE WHEN LOWER(TRIM(t.overAllStatus)) = 'close' THEN 1 ELSE 0 END)) " +
-		       "FROM Lead t " +
-		       "WHERE t.deletedTag = 'False'")
+		       "FROM Lead t " 
+		      )
 		List<LeadStatusCountDto> findLeadStatusCount();
 
 	LeadStatusCountDto findLeadStatusCountByLid(int lid);
@@ -66,7 +66,7 @@ public interface LeadRepository extends JpaRepository<Lead, Integer> {
 		       "SUM(CASE WHEN TRIM(t.status) = 'Final Agreement signed by Client' THEN 1 ELSE 0 END), " +
 		       "SUM(CASE WHEN TRIM(t.status) = 'Final Agreement signed by Client - Printed copy received and Stored by DiWise Team' THEN 1 ELSE 0 END)) " +
 		       "FROM Lead t " +
-		       "WHERE t.deletedTag = 'False' AND t.updatedDate BETWEEN :startDate AND :endDate")
+		       "WHERE  t.updatedDate BETWEEN :startDate AND :endDate")
 		List<DatewiseStatusCount> findAllStatusCountsBetweenDates(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
 	List<Lead> findAllByStatusAndUpdatedDateBetween(String status, String updatedDate, String endDate);

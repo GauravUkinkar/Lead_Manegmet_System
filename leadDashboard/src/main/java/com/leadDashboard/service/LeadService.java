@@ -16,7 +16,7 @@ public interface LeadService {
 	 public void saveLeadsFromCsv(MultipartFile file);
 	 public Map<String, Object>getallStatusCount(String startDate,String endDate);
 	 public Map<String, Object>getAllLeadByStatusUpdataedDateAndCurrentDat(String status,String updatedDate,String endDate);
-	 public Map<String, Object>getAllUnassignedleads();
+//	 public Map<String, Object>getAllUnassignedleads();
 	 public Map<String, Object> getLeadsUpdatedInLast10Days();
 	 public Map<String, Object>assingLead(int lid,int uid);
 
